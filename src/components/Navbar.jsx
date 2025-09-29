@@ -1,22 +1,35 @@
-"use client"
-import { useEffect, useState } from "react"
+"use client";
+import { useEffect, useState } from "react";
+import { Link, useLocation , useNavigate} from "react-router-dom";
+import useAuth from "../hooks/useAuth.js";
 
 export default function Navbar() {
-  const [open, setOpen] = useState(false)
-  const [dark, setDark] = useState(false)
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const [dark, setDark] = useState(false);
+  const { authenticated, login, logout } = useAuth();
+
+  const handleLogin = async () => {
+    navigate("/login");
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   useEffect(() => {
-    // Initialize dark mode from localStorage
-    const saved = localStorage.getItem("theme") === "dark"
-    setDark(saved)
-    document.documentElement.classList.toggle("dark", saved)
-  }, [])
+    const saved = localStorage.getItem("theme") === "dark";
+    setDark(saved);
+    document.documentElement.classList.toggle("dark", saved);
+  }, []);
 
   function toggleDark() {
-    const next = !dark
-    setDark(next)
-    document.documentElement.classList.toggle("dark", next)
-    localStorage.setItem("theme", next ? "dark" : "light")
+    const next = !dark;
+    setDark(next);
+    document.documentElement.classList.toggle("dark", next);
+    localStorage.setItem("theme", next ? "dark" : "light");
   }
 
   return (
@@ -24,21 +37,44 @@ export default function Navbar() {
       <div className="mx-auto max-w-6xl px-4">
         <div className="flex h-14 items-center justify-between">
           <div className="flex items-center gap-3">
-            <span className="text-lg font-bold text-blue-600 dark:text-blue-400">CryptoDash</span>
+            <span className="text-lg font-bold text-blue-600 dark:text-blue-400">
+              CryptoDash
+            </span>
             <div className="hidden sm:flex items-center gap-4">
-             { window.location.pathname !== "/dashboard" && <a
-                href="#"
-                className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors"
-              >
-                Dashboard
-              </a>}
-              {window.location.pathname !== "/chat" && 
-              <a
-                href="/chat"
-                className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors"
-              >
-                Assistant
-              </a>}
+              {location.pathname === "/dashboard" && (
+                <Link
+                  to="/chat"
+                  className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors"
+                >
+                  Assistant
+                </Link>
+              )}
+
+              {location.pathname === "/chat" && (
+                <Link
+                  to="/dashboard"
+                  className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors"
+                >
+                  Dashboard
+                </Link>
+              )}
+            </div>
+            <div className="flex items-center gap-2">
+              {authenticated ? (
+                <button
+                  onClick={handleLogout}
+                  className="inline-flex h-9 items-center rounded-md border border-gray-300 bg-gray-200 dark:bg-gray-800 dark:border-gray-700 px-3 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800"
+                >
+                  Logout
+                </button>
+              ) : (
+                <button
+                  onClick={handleLogin}
+                  className="inline-flex h-9 items-center rounded-md border border-gray-300 bg-gray-200 dark:bg-gray-800 dark:border-gray-700 px-3 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800"
+                >
+                  Login
+                </button>
+              )}
             </div>
           </div>
 
@@ -51,7 +87,6 @@ export default function Navbar() {
             >
               {dark ? "Light" : "Dark"}
             </button>
-            
           </div>
         </div>
 
@@ -59,18 +94,24 @@ export default function Navbar() {
         {open && (
           <div id="mobile-menu" className="sm:hidden pb-3">
             <div className="flex flex-col gap-2">
-              <a
-                href="#"
-                className="px-2 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800"
-              >
-                Dashboard
-              </a>
-              <a
-                href="assistant"
-                className="px-2 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800"
-              >
-                Assistant
-              </a>
+              {location.pathname === "/dashboard" && (
+                <Link
+                  to="/chat"
+                  className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors"
+                >
+                  Assistant
+                </Link>
+              )}
+
+              {location.pathname === "/chat" && (
+                <Link
+                  to="/dashboard"
+                  className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors"
+                >
+                  Dashboard
+                </Link>
+              )}
+
               <button
                 type="button"
                 onClick={toggleDark}
@@ -84,5 +125,5 @@ export default function Navbar() {
         )}
       </div>
     </nav>
-  )
+  );
 }

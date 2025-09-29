@@ -6,27 +6,38 @@ import useApi from "../hooks/useApi.js";
 
 
 export default function Dashboard() {
+
   const [selectedCoin, setSelectedCoin] = useState(null);
   const [chartData, setChartData] = useState([]);
   
-  // Fetch top coins
   const { data: coins, loading: coinsLoading, error: coinsError, execute: fetchCoins } = useApi(getCoins, true);
   
-  // Fetch coin history for chart
   const { data: history, loading: historyLoading, execute: fetchHistory } = useApi(getCoinHistory, false);
 
-  // Set the first coin as selected by default
   useEffect(() => {
     if (coins && coins.length > 0 && !selectedCoin) {
         handleCoinSelect(coins[0]);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [coins]);
 
-  // Fetch coin history when a coin is selected
+  const [coinsData, setCoinsData] = useState([]);
+
+  useEffect(() => {
+    if (coins) {
+      setCoinsData(coins); 
+    }
+  }, [coins]);
+
+  const updateCoinFavorite = (id, isFavourite) => {
+    setCoinsData((prevCoins) =>
+      prevCoins.map((c) =>
+        c.id === id ? { ...c, is_favorite: isFavourite } : c
+      )
+    );
+  };
+
   useEffect(() => {
     if (selectedCoin) {
-      // Clear existing chart data while loading new coin
       setChartData([]);
       const coinIdForHistory =
         selectedCoin.coingecko_id ||
@@ -36,13 +47,11 @@ export default function Dashboard() {
       console.log('Fetching history for coin:', selectedCoin.name, 'with ID:', coinIdForHistory);
       
       if (coinIdForHistory) {
-        // Add a small delay to prevent rapid successive calls
         setTimeout(() => {
           fetchHistory(coinIdForHistory);
         }, 100);
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCoin]);
 
   useEffect(() => {
@@ -114,6 +123,7 @@ export default function Dashboard() {
         >
           Retry
         </button>
+        
       </div>
     );
   }
@@ -158,9 +168,10 @@ export default function Dashboard() {
       </div>
 
       <CoinsTable 
-        coins={coins}
-        selectedCoin={selectedCoin}
-        handleCoinSelect={handleCoinSelect}
+      coins={coinsData}
+      selectedId={selectedCoin?.coingecko_id} // or selectedCoin?.id depending on your data
+      onSelect={handleCoinSelect}
+      onToggleFavorite={updateCoinFavorite} 
       />
 
 
