@@ -75,7 +75,7 @@ export const verifyToken = (token) => api.post("/api/token/verify/", { token });
 // Business endpoints
 export const getCoins = () => api.get("/apis/v1/coins/top");
 export const getCoinHistory = (coinId) =>
-  api.get(`/apis/v1/coins/${coinId}/history/?_=${new Date().getTime()}`);
+  api.get(`/apis/v1/coins/${coinId}/history/`);
 
 export const chatQuery = (query) =>
   api.post("/apis/v1/qa/", { query });
