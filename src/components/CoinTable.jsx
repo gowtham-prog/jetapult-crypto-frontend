@@ -102,7 +102,7 @@ export default function CoinsTable({ coins, selectedId, onSelect, onToggleFavori
               </th>
               <th
                 scope="col"
-                className="px-4 sm:px-6 py-3 text-left font-medium text-gray-600 dark:text-gray-300 table-cell"
+                className="px-4 text-center sm:px-6 py-3 font-medium text-gray-600 dark:text-gray-300 table-cell"
               >
                 Action
               </th>
@@ -160,13 +160,13 @@ export default function CoinsTable({ coins, selectedId, onSelect, onToggleFavori
                     {formatVol(coin.volume)}
                   </td>
                   <td className="px-4 sm:px-6 py-3 table-cell">
-                    <div className="flex flex-row justify-center align-middle gap=2">
+                    <div className="flex flex-row justify-between align-center gap=2">
                       <div
                         onClick={(e) => {
                           e.stopPropagation();
                           toggleFavourite(coin);
                         }}
-                        className="cursor-pointer"
+                        className="cursor-pointer flex items-center justify-center w-1/2"
                       >
                         {coin.is_favorite ? (
                           <Heart className="text-red-600 fill-red-600" />

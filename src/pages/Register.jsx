@@ -20,19 +20,19 @@ export default function Register() {
     setSuccess("");
     setLoading(true);
     if(!email || !username || !password || !password2) {
-      setError("All fields are required");
+      setError({"message" :"All fields are required"});
       setLoading(false);
       return;
     }
 
     if (password !== password2) {
-      setError("Passwords do not match");
+      setError({"message" :"Passwords do not match"});
       setLoading(false);
       return;
     }
 
     if(password.length < 8) {
-      setError("Password must be at least 8 characters");
+      setError({"message" :"Password must be at least 8 characters"});
       console.log(error)
       setLoading(false);
       return;
